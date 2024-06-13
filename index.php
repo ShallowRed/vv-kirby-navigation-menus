@@ -4,7 +4,7 @@ Kirby::plugin('vv/navigation-menus', [
 
   'collections' => [
     'navigation-menus' => function () {
-      return option('vv/navigation-menus.menus');
+      return option('vv.navigation-menus.menus');
     },
   ],
 
