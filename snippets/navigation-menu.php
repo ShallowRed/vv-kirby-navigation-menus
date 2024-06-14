@@ -7,7 +7,7 @@ $navigationProps = $site->navigationProps($key);
     <li>
       <?php $icon = !$page->isCurrentPage($navPage)
       ? ''
-      : Html::tag('span', '', ['class' => 'i-ri-arrow-drop-right-line']);
+      : Html::tag('span', '', ['class' => 'current-page-icon']);
       ?>
       <?php echo Html::a(
           $navPage->url(),
