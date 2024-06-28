@@ -22,14 +22,20 @@ Kirby::plugin('vv/navigation-menus', [
 
     'navPages' => function ($key) {
       $menu = collection('navigation-menus')[$key] ?? null;
-      $navPages = $this->content()->get($menu['name'])->toPages();
-      return $navPages;
+      if (is_array($menu) && isset($menu['name'])) {
+        $navPages = $this->content()->get($menu['name']);
+          if ($navPages) {
+            return $navPages->toPages();
+          }
+        }
+      return null;
     },
 
     'navigationProps' => function ($key) {
       $menu = collection('navigation-menus')[$key] ?? null;
+      $navPages = $this->navPages($key);
       return [
-        'navPages' => $this->navPages($key),
+        'navPages' => $navPages ?? null,
         'attrs' => [
           'id' => $menu['id'],
           'aria-label' => $menu['ariaLabel'],
@@ -46,13 +52,19 @@ Kirby::plugin('vv/navigation-menus', [
     },
 
     'isInMenu' => function ($key) {
-      $navPages = site()->navPages($key);
+      $navPages = site()->navPages($key) ?? null;
+      if (!$navPages) {
+        return false;
+      }
       $isInMenu = $navPages->find($this->uid()) !== null;
       return $isInMenu;
     },
 
     'prevInMenu' => function ($key) {
-      $navPages = site()->navPages($key);
+      $navPages = site()->navPages($key) ?? null;
+      if (!$navPages) {
+        return null;
+      }
       $index = $navPages->indexOf($this->uid());
 
       if ($index === 0) {
@@ -63,7 +75,10 @@ Kirby::plugin('vv/navigation-menus', [
     },
 
     'nextInMenu' => function ($key) {
-      $navPages = site()->navPages($key);
+      $navPages = site()->navPages($key) ?? null;
+      if (!$navPages) {
+        return null;
+      }
       $index = $navPages->indexOf($this->uid());
 
       if ($index === $navPages->count() - 1) {
